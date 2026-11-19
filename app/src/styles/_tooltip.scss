@@ -44,3 +44,8 @@
 		fill: var(--tooltip-background-color);
 	}
 }
+
+// Tooltip content stays mounted while closed; its popper wrapper must never intercept clicks on elements beneath it.
+[data-reka-popper-content-wrapper]:has(> .tooltip) {
+	pointer-events: none;
+}

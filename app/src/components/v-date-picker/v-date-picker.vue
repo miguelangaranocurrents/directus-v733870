@@ -66,6 +66,18 @@ const {
 	onUpdate: (value) => emit('update:modelValue', value),
 });
 
+const weekStartsOn = computed<0 | 1 | 2 | 3 | 4 | 5 | 6>(() => {
+	try {
+		const locale = new Intl.Locale(userStore.language) as any;
+		const info = locale.getWeekInfo?.() ?? locale.weekInfo;
+		if (info?.firstDay) return (info.firstDay % 7) as 0 | 1 | 2 | 3 | 4 | 5 | 6;
+	} catch {
+		// fall through to default
+	}
+
+	return 0;
+});
+
 const monthFormatter = computed(() => {
 	// Use 'long' for “January”, 'short' for “Jan”, 'narrow' for “J”
 	// timeZone: 'UTC' ensures the month name matches the UTC date created by `toDate('UTC')` below,
@@ -157,6 +169,8 @@ function setToNow() {
 			class="calendar"
 			fixed-weeks
 			weekday-format="short"
+			:locale="userStore.language"
+			:week-starts-on="weekStartsOn"
 			:dir="isRTL ? 'rtl' : 'ltr'"
 			@update:model-value="handleDateChange"
 		>
